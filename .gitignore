@@ -3,13 +3,16 @@
 /local.properties
 /.idea/
 .DS_Store
-/build
+# Earlier this was `/build` (root-only) which let `app/build/` slip in.
+build/
 /captures
 .externalNativeBuild
 .cxx
 local.properties
-**/release/
-**/debug/
+# Only ignore release/debug *output* dirs, not source paths that happen to
+# contain "release" or "debug" in their name.
+app/build/outputs/release/
+app/build/outputs/debug/
 *.jks
 *.keystore
 keystore.properties
