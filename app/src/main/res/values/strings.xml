@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Doodlepop</string>
+    <string name="preview_desc">Image preview</string>
+
+    <!-- Tabs / panels -->
+    <string name="tab_filters">Filters</string>
+    <string name="tab_adjust">Adjust</string>
+    <string name="tab_transform">Transform</string>
+
+    <!-- Sliders -->
+    <string name="slider_intensity">Intensity</string>
+    <string name="slider_brightness">Brightness</string>
+    <string name="slider_contrast">Contrast</string>
+    <string name="slider_saturation">Saturation</string>
+    <string name="slider_vignette">Vignette</string>
+
+    <!-- Transform actions -->
+    <string name="btn_rotate_left">↺</string>
+    <string name="btn_rotate_right">↻</string>
+    <string name="btn_flip_h">⇋</string>
+    <string name="btn_flip_v">⇅</string>
+
+    <!-- Toolbar menu -->
+    <string name="menu_pick">Pick photo</string>
+    <string name="menu_save">Save</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_reset">Reset edits</string>
+    <string name="menu_about">About</string>
+
+    <!-- Misc UI -->
+    <string name="label_original">Original</string>
+    <string name="msg_pick_first">Pick an image first</string>
+    <string name="msg_no_image">No image selected</string>
+    <string name="msg_load_failed">Failed to load image</string>
+    <string name="msg_saved">Saved to Pictures/Doodlepop</string>
+    <string name="msg_save_failed">Save failed</string>
+    <string name="msg_share_chooser">Share image with…</string>
+
+    <!-- About screen -->
+    <string name="about_title">About &amp; Privacy</string>
+    <string name="version_label">Version %1$s</string>
+    <string name="about_blurb">Doodlepop is a simple photo filter app. Pick a photo, apply filters and adjustments, and save the result to your gallery.</string>
+    <string name="data_blurb">Doodlepop does not collect, store, or share your photos. Photos are processed entirely on your device.\n\nAds are served via Google AdMob, which may collect device identifiers and approximate location to show relevant ads. See the privacy policy for details.</string>
+    <string name="btn_privacy">View Privacy Policy</string>
+    <string name="btn_reset_consent">Reset Ad Consent</string>
+
+    <!-- AdMob TEST banner unit ID. Replace before publishing. -->
+    <string name="admob_banner_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <!-- Replace with your hosted policy URL before publishing. -->
+    <string name="privacy_policy_url" translatable="false">https://example.com/doodlepop/privacy</string>
+</resources>

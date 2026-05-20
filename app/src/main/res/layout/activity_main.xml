@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="?android:colorBackground">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="@string/app_name"
+        app:menu="@menu/main_menu"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:adSize="BANNER"
+        app:adUnitId="@string/admob_banner_unit_id"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        app:layout_constraintBottom_toTopOf="@id/panelContainer">
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_filters" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_adjust" />
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_transform" />
+    </com.google.android.material.tabs.TabLayout>
+
+    <FrameLayout
+        android:id="@+id/panelContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/adView">
+
+        <!-- Filters panel: horizontal scrolling chip strip -->
+        <HorizontalScrollView
+            android:id="@+id/filtersPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="6dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/filterChips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:singleLine="true"
+                app:chipSpacingHorizontal="6dp" />
+        </HorizontalScrollView>
+
+        <!-- Adjust panel: four sliders -->
+        <LinearLayout
+            android:id="@+id/adjustPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <include
+                android:id="@+id/sliderIntensity"
+                layout="@layout/include_slider" />
+
+            <include
+                android:id="@+id/sliderBrightness"
+                layout="@layout/include_slider" />
+
+            <include
+                android:id="@+id/sliderContrast"
+                layout="@layout/include_slider" />
+
+            <include
+                android:id="@+id/sliderSaturation"
+                layout="@layout/include_slider" />
+
+            <include
+                android:id="@+id/sliderVignette"
+                layout="@layout/include_slider" />
+        </LinearLayout>
+
+        <!-- Transform panel: rotate / flip buttons -->
+        <LinearLayout
+            android:id="@+id/transformPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRotateLeft"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="@string/btn_rotate_left" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRotateRight"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="4dp"
+                android:text="@string/btn_rotate_right" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFlipH"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="4dp"
+                android:text="@string/btn_flip_h" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFlipV"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="@string/btn_flip_v" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:scaleType="fitCenter"
+        android:background="#11000000"
+        android:contentDescription="@string/preview_desc"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tabs" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/imagePreview"
+        app:layout_constraintBottom_toBottomOf="@id/imagePreview"
+        app:layout_constraintStart_toStartOf="@id/imagePreview"
+        app:layout_constraintEnd_toEndOf="@id/imagePreview" />
+
+    <TextView
+        android:id="@+id/compareLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        android:padding="6dp"
+        android:background="#80000000"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp"
+        android:text="@string/label_original"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintEnd_toEndOf="@id/imagePreview" />
+</androidx.constraintlayout.widget.ConstraintLayout>
