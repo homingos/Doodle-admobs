@@ -162,6 +162,63 @@ Then build the Play upload bundle:
 # app/build/outputs/bundle/release/app-release.aab
 ```
 
+## Serving the Vertex HTML5 creative through this interstitial
+
+The interstitial slot is wired to AdMob Mediation via a **custom event** —
+when AdMob's waterfall routes an impression to our custom event entry, we
+load and play Vertex's interactive HTML5 creative inside a WebView instead of
+a Google-served ad.
+
+No code changes are needed in the app; everything is configured in the AdMob
+console against the production interstitial unit
+(`ca-app-pub-7343868790309663/2507587335`).
+
+### One-time AdMob console setup
+
+1. <https://apps.admob.com/> → *Doodlepop* → *Ad units* → click your
+   **interstitial** unit (the one whose ID is referenced as
+   `ADMOB_INTERSTITIAL_UNIT_ID` in `app/build.gradle.kts` release block).
+2. Switch to the **Mediation** tab → *Create mediation group* (or edit the
+   existing one) → platform **Android**, ad format **Interstitial**.
+3. Under *Ad sources*, click **Add custom event**:
+   - **Label**: `Vertex HTML5`
+   - **Class Name**: `com.doodlepop.app.VertexCustomEventInterstitial`
+   - **Parameter** (must be valid JSON, one line):
+     ```
+     {"campaign":"5svwQBRlBwdG","workerBase":"https://vertex-player.appless.workers.dev","landing":"https://your-landing-page.example","duration":"00:00:30"}
+     ```
+   - **eCPM**: set high (e.g. `100`) while testing so Vertex always wins the
+     waterfall. Drop this back later if you blend Vertex with AdMob house ads.
+4. Keep the default AdMob Network entry in the group at a lower eCPM (e.g.
+   `1`) as a fallback so the slot still fills if our worker is unreachable.
+5. Save. Mediation config can take **15–60 minutes** to propagate to live
+   devices — be patient before deciding it isn't working.
+
+### Testing on-device
+
+- The app's existing `InterstitialAdManager` already calls
+  `InterstitialAd.load(unitId)` and `showIfReady(activity, …)` — nothing
+  needs to change there. Once the mediation group is live, the same
+  load/show calls will route to the Vertex custom event.
+- **Debug builds** use Google's universal test interstitial ID
+  (`ca-app-pub-3940256099942544/1033173712`) and will NOT pick up the
+  mediation config — they always serve the Google test ad. To exercise the
+  Vertex path, build a release variant (or temporarily swap the debug
+  `ADMOB_INTERSTITIAL_UNIT_ID` to the real one — but **do not click ads** in
+  that build; clicking your own live ads gets the AdMob account banned).
+- When the interstitial does serve Vertex, you'll see logs tagged
+  `VertexCustomEvent` (adapter lifecycle) and `VertexInterstitial`
+  (WebView + SIMID handshake) in `adb logcat`.
+
+### What the creative actually loads
+
+`VertexInterstitialActivity` loads `<workerBase>/simid.html` from the Vertex
+worker, then drives the SIMID protocol natively from Kotlin
+(`createSession` → `init` → `startCreative`). Click-throughs from inside the
+creative arrive as `requestNavigate` messages and are opened with an
+`ACTION_VIEW` intent; the Activity then finishes so AdMob sees the ad
+dismiss.
+
 ## Testing the consent flow
 
 UMP only shows the form for users in GDPR regions. To force-test it from a US
@@ -182,6 +239,8 @@ app/src/main/
     ImageFilters.kt                     – Sketch / B&W / Bubble
     InterstitialAdManager.kt            – Load/show/cooldown logic
     ConsentManager.kt                   – UMP GDPR/CCPA flow
+    VertexCustomEventInterstitial.kt    – AdMob mediation adapter → Vertex creative
+    VertexInterstitialActivity.kt       – Full-screen WebView that hosts simid.html
   res/
     layout/activity_main.xml            – Toolbar + preview + buttons + AdView
     layout/activity_about.xml

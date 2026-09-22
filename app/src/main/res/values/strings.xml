@@ -47,6 +47,5 @@
 
     <!-- AdMob TEST banner unit ID. Replace before publishing. -->
     <string name="admob_banner_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <!-- Replace with your hosted policy URL before publishing. -->
-    <string name="privacy_policy_url" translatable="false">https://example.com/doodlepop/privacy</string>
+    <string name="privacy_policy_url" translatable="false">https://doodlepop.vercel.app/privacy</string>
 </resources>

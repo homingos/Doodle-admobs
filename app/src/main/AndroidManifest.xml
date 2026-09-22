@@ -41,5 +41,14 @@
             android:name=".AboutActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+
+        <!-- Launched by VertexCustomEventInterstitial (AdMob mediation custom
+             event) to render Vertex's interactive HTML5 creative full-screen.
+             Not exported — only callable from inside this app. -->
+        <activity
+            android:name=".VertexInterstitialActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:theme="@style/Theme.Doodlepop" />
     </application>
 </manifest>

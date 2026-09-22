@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.doodlepop.app.databinding.ActivityMainBinding
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.chip.Chip
 import com.google.android.material.slider.Slider
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var interstitial: InterstitialAdManager
     private lateinit var consent: ConsentManager
+    private var bannerAdView: AdView? = null
     private var adsInitialized = false
 
     /** The picked photo, after transforms. Filter pipeline runs against this. */
@@ -395,7 +398,18 @@ class MainActivity : AppCompatActivity() {
         if (adsInitialized) return
         adsInitialized = true
         MobileAds.initialize(this) {}
-        binding.adView.loadAd(AdRequest.Builder().build())
+        // Build the AdView in code so adSize + adUnitId both come from the
+        // same source. Mixing XML adSize with code-set adUnitId made the SDK
+        // throw at loadAd; this is Google's documented programmatic pattern.
+        val ad = AdView(this).apply {
+            setAdSize(AdSize.BANNER)
+            adUnitId = BuildConfig.ADMOB_BANNER_UNIT_ID
+        }
+        bannerAdView = ad
+        binding.adContainer.removeAllViews()
+        binding.adContainer.addView(ad)
+        ad.loadAd(AdRequest.Builder().build())
+
         interstitial = InterstitialAdManager(this, BuildConfig.ADMOB_INTERSTITIAL_UNIT_ID)
         interstitial.preload()
     }
@@ -407,17 +421,18 @@ class MainActivity : AppCompatActivity() {
     private fun toast(msg: String) = Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 
     override fun onPause() {
-        if (adsInitialized) binding.adView.pause()
+        bannerAdView?.pause()
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (adsInitialized) binding.adView.resume()
+        bannerAdView?.resume()
     }
 
     override fun onDestroy() {
-        if (adsInitialized) binding.adView.destroy()
+        bannerAdView?.destroy()
+        bannerAdView = null
         super.onDestroy()
     }
 }

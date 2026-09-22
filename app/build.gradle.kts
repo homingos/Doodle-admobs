@@ -17,12 +17,12 @@ val hasReleaseSigning = keystoreProps.getProperty("storeFile") != null
 
 android {
     namespace = "com.doodlepop.app"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.doodlepop.app"
         minSdk = 26 // 26+ avoids needing legacy PNG launcher icons (adaptive icons are API 26+)
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         vectorDrawables { useSupportLibrary = true }
@@ -41,11 +41,29 @@ android {
 
     buildTypes {
         debug {
-            // Universal Google test IDs — safe to use on your own device.
+            // Interstitial: use the PRODUCTION unit ID so AdMob's mediation
+            // group (TestMediationVertexAndroid) is invoked and the Vertex
+            // custom event has a chance to win the waterfall. Pair this with
+            // a high custom-event eCPM in the AdMob console so Vertex always
+            // beats AdMob Network bidding — that guarantees the only ad ever
+            // shown on a debug device is our own Vertex creative, which is
+            // safe to tap. NEVER click an ad in a debug build that turns out
+            // NOT to be Vertex (a Google fallback ad means the waterfall fell
+            // through — log the impression for diagnosis but don't tap it,
+            // or AdMob will flag the click as invalid traffic).
+            //
+            // Banner stays on the universal Google test ID — banner has no
+            // mediation custom event, so testing it against the real unit
+            // would risk invalid clicks.
             buildConfigField(
                 "String",
                 "ADMOB_INTERSTITIAL_UNIT_ID",
-                "\"ca-app-pub-3940256099942544/1033173712\""
+                "\"ca-app-pub-7343868790309663/2507587335\""
+            )
+            buildConfigField(
+                "String",
+                "ADMOB_BANNER_UNIT_ID",
+                "\"ca-app-pub-3940256099942544/6300978111\""
             )
         }
         release {
@@ -55,11 +73,16 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Real interstitial unit ID from AdMob console.
+            // Real ad unit IDs from AdMob console.
             buildConfigField(
                 "String",
                 "ADMOB_INTERSTITIAL_UNIT_ID",
                 "\"ca-app-pub-7343868790309663/2507587335\""
+            )
+            buildConfigField(
+                "String",
+                "ADMOB_BANNER_UNIT_ID",
+                "\"ca-app-pub-7343868790309663/1741364217\""
             )
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
